@@ -5,4 +5,3 @@ const SPAM_PATTERNS = [/http/, /free money/i, /click here/i, /(.)\1{4,}/i,
 ];
 
 console.log("Content script loaded. Fast filter constraints initialized.");
-
