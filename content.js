@@ -12,7 +12,10 @@ const COMMENT_SELECTORS = [
   '[data-testid="tweetText"]', // X/Twitter
   '#content-text',             // YouTube
   '.comment-text',             // Generic
-  'p'                          // Fallback for testing
+  '.dtText',                   // Merriam-Webster definitions
+  '.vg',                       // Merriam-Webster verb guide
+  'h1', 'h2',                  // Headers (e.g., page titles)
+  'p'                          // Fallback for paragraphs
 ];
 
 function extractComments() {
@@ -42,16 +45,16 @@ function applyFastFilter(text) {
   // 2. Check for obvious toxic words
   let toxicCount = 0;
   for (const word of TOXIC_WORDS) {
-    if (lowerText.includes(word)) {
+    // Add word boundaries to avoid matching partial words (e.g. "dumb" in "dumbo")
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    if (regex.test(lowerText)) {
       toxicCount++;
     }
   }
 
-  if (toxicCount >= 2) {
+  // Changed to 1 for easier testing on sites like dictionary pages
+  if (toxicCount >= 1) {
     return { action: 'hide', reason: 'highly_toxic' };
-  } else if (toxicCount === 1) {
-    // Unclear case -> send to ML
-    return { action: 'analyze' };
   }
 
   // Clean
