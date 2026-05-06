@@ -45,8 +45,10 @@ function applyFastFilter(text) {
   // 2. Check for obvious toxic words
   let toxicCount = 0;
   for (const word of TOXIC_WORDS) {
-    // Add word boundaries to avoid matching partial words (e.g. "dumb" in "dumbo")
-    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    // Add word boundaries and allow optional asterisks between letters 
+    // and an optional 's' at the end to catch obfuscated words.
+    const patternChars = word.split('').join('\\**');
+    const regex = new RegExp(`\\b${patternChars}\\**s?\\b`, 'i');
     if (regex.test(lowerText)) {
       toxicCount++;
     }
