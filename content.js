@@ -1,7 +1,15 @@
 const TOXIC_WORDS = ["idiot","stupid","moron","dumb",  "hate", "scum", "trash","loser",];
-const SPAM_PATTERNS = [/http/, /free money/i, /click here/i, /(.)\1{4,}/i,
-  /\b(click here|make money fast|buy now|cheap meds)\b/i,
-  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi
+const SPAM_PATTERNS = [
+  // Repeated characters (spammy text)
+  /(.)\1{4,}/i,
+  // Expanded spam phrases
+  /\b(click here|make money fast|buy now|cheap meds|get rich quick|work from home|earn \$\d+|subscribe now|crypto giveaway|free gift card|lose weight fast|100% free|no credit card required)\b/i,
+  // Shortened URLs
+  /https?:\/\/(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|is\.gd|buff\.ly|adf\.ly|cutt\.ly|rebrand\.ly)\/[a-zA-Z0-9_-]+/i,
+  // Suspicious domains (e.g., domains containing spam keywords)
+  /https?:\/\/(?:www\.)?[a-zA-Z0-9-]*?(?:free-?robux|casino|viagra|cheap-?meds|giveaway|hack)[a-zA-Z0-9-]*\.[a-z]{2,}/i,
+  // High-risk TLDs often used for spam
+  /https?:\/\/[a-zA-Z0-9.-]+\.(xyz|top|pw|biz|info|loan|win)\b/i
 ];
 
 console.log("Content script loaded. Fast filter constraints initialized.");
@@ -120,7 +128,7 @@ function hideComment(node, reason = "Content hidden by Project-K filter") {
   placeholder.style.textAlign = 'center';
   placeholder.style.cursor = 'pointer';
   placeholder.style.letterSpacing = '1px';
-  placeholder.innerText = `[ ${reason} - Click to show ]`;
+  placeholder.innerText = "Content Hidden Tap to display";
   
   placeholder.addEventListener('click', () => {
     node.style.display = originalDisplay;
