@@ -1,29 +1,22 @@
-const TOXIC_WORDS = ["idiot","stupid","moron","dumb",  "hate", "scum", "trash","loser",];
+const TOXIC_WORDS = ["idiot", "stupid", "moron", "dumb", "hate", "scum", "trash", "loser"];
 const SPAM_PATTERNS = [
-  // Repeated characters (spammy text)
   /(.)\1{4,}/i,
-  // Expanded spam phrases
   /\b(click here|make money fast|buy now|cheap meds|get rich quick|work from home|earn \$\d+|subscribe now|crypto giveaway|free gift card|lose weight fast|100% free|no credit card required)\b/i,
-  // Shortened URLs
   /https?:\/\/(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|is\.gd|buff\.ly|adf\.ly|cutt\.ly|rebrand\.ly)\/[a-zA-Z0-9_-]+/i,
-  // Suspicious domains (e.g., domains containing spam keywords)
   /https?:\/\/(?:www\.)?[a-zA-Z0-9-]*?(?:free-?robux|casino|viagra|cheap-?meds|giveaway|hack)[a-zA-Z0-9-]*\.[a-z]{2,}/i,
-  // High-risk TLDs often used for spam
   /https?:\/\/[a-zA-Z0-9.-]+\.(xyz|top|pw|biz|info|loan|win)\b/i
 ];
 
 console.log("Content script loaded. Fast filter constraints initialized.");
 
-// Basic selectors for popular social media (e.g., X/Twitter, YouTube, general articles)
-// These would need to be fine-tuned for actual production use on specific platforms.
 const COMMENT_SELECTORS = [
-  '[data-testid="tweetText"]', // X/Twitter
-  '#content-text',             // YouTube
-  '.comment-text',             // Generic
-  '.dtText',                   // Merriam-Webster definitions
-  '.vg',                       // Merriam-Webster verb guide
-  'h1', 'h2',                  // Headers (e.g., page titles)
-  'p'                          // Fallback for paragraphs
+  '[data-testid="tweetText"]',
+  '#content-text',
+  '.comment-text',
+  '.dtText',
+  '.vg',
+  'h1', 'h2',
+  'p'
 ];
 
 function extractComments() {
@@ -31,7 +24,6 @@ function extractComments() {
   for (const selector of COMMENT_SELECTORS) {
     const nodes = document.querySelectorAll(selector);
     nodes.forEach(node => {
-      // Only process nodes that haven't been processed yet
       if (!node.dataset.projectKProcessed) {
         elements.push(node);
       }
@@ -43,18 +35,14 @@ function extractComments() {
 function applyFastFilter(text) {
   const lowerText = text.toLowerCase();
   
-  // 1. Check for obvious spam
   for (const pattern of SPAM_PATTERNS) {
     if (pattern.test(text)) {
       return { action: 'hide', reason: 'spam' };
     }
   }
 
-  // 2. Check for obvious toxic words
   let toxicCount = 0;
   for (const word of TOXIC_WORDS) {
-    // Add word boundaries and allow optional asterisks between letters 
-    // and an optional 's' at the end to catch obfuscated words.
     const patternChars = word.split('').join('\\**');
     const regex = new RegExp(`\\b${patternChars}\\**s?\\b`, 'i');
     if (regex.test(lowerText)) {
@@ -62,20 +50,16 @@ function applyFastFilter(text) {
     }
   }
 
-  // Hide if multiple toxic words are found
   if (toxicCount >= 2) {
     return { action: 'hide', reason: 'highly_toxic' };
   } else if (toxicCount === 1) {
-    // Send to background ML for analysis on borderline cases
     return { action: 'analyze' };
   }
 
-  // Check for potentially borderline words that aren't strictly toxic but might need ML
   if (lowerText.includes("bad") || lowerText.includes("awful") || lowerText.includes("terrible") || lowerText.includes("horrible") || lowerText.includes("disgusting") || lowerText.includes("poor")) {
       return { action: 'analyze' };
   }
 
-  // Clean
   return { action: 'allow' };
 }
 
@@ -83,7 +67,6 @@ function processComments() {
   const comments = extractComments();
   
   comments.forEach(commentNode => {
-    // Mark as processed
     commentNode.dataset.projectKProcessed = "true";
     
     const text = commentNode.innerText || commentNode.textContent;
@@ -96,7 +79,6 @@ function processComments() {
       hideComment(commentNode);
     } else if (filterResult.action === 'analyze') {
       console.log(`[Project-K] Sending to ML (Unclear case):`, text.substring(0, 30) + '...');
-      // Add a slight visual indicator while analyzing
       commentNode.style.opacity = '0.5';
       
       chrome.runtime.sendMessage({ action: "analyze_text", text: text }, (response) => {
@@ -108,10 +90,9 @@ function processComments() {
 
         if (response && response.score) {
           console.log(`[Project-K] ML Score for "${text.substring(0, 15)}...": ${response.score}`);
-          if (response.score > 0.5) { // Threshold for hate speech
+          if (response.score > 0.5) {
              hideComment(commentNode, "ML Model flagged this content.");
           } else {
-             // Reset visual indicator if clean
              commentNode.style.opacity = '1';
           }
         }
@@ -121,15 +102,14 @@ function processComments() {
 }
 
 function hideComment(node, reason = "Content hidden by Project-K filter") {
-  // Rather than removing, we typically hide it and show a placeholder
   const originalDisplay = node.style.display;
   node.style.display = 'none';
   
   const placeholder = document.createElement('div');
   placeholder.style.padding = '12px 8px';
   placeholder.style.margin = '4px 0';
-  placeholder.style.backgroundColor = '#111111'; // Dark black stripe
-  placeholder.style.color = '#ffffff'; // White text
+  placeholder.style.backgroundColor = '#111111';
+  placeholder.style.color = '#ffffff';
   placeholder.style.borderRadius = '4px';
   placeholder.style.fontSize = '12px';
   placeholder.style.fontWeight = 'bold';
@@ -148,8 +128,5 @@ function hideComment(node, reason = "Content hidden by Project-K filter") {
   }
 }
 
-// Initial run
 setTimeout(processComments, 2000);
-
-// Run periodically to catch dynamically loaded comments (e.g., infinite scroll)
 setInterval(processComments, 3000);
