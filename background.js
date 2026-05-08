@@ -12,8 +12,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let score = 0.1;
       const lowerText = request.text.toLowerCase();
       
-      if (lowerText.includes("bad") || lowerText.includes("awful") || lowerText.includes("terrible")) {
-          score = 0.7; // Send back a high score for testing unclear cases
+      if (lowerText.includes("horrible") || lowerText.includes("disgusting") || lowerText.includes("terrible")) {
+          score = 0.7; // High score for stronger negative words
+      } else if (lowerText.includes("bad") || lowerText.includes("awful") || lowerText.includes("poor")) {
+          score = 0.4; // Moderate score, below the default 0.5 threshold
       }
       
       console.log(`Sending score ${score} for text: "${request.text.substring(0, 20)}..."`);
