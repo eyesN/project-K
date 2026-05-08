@@ -62,9 +62,17 @@ function applyFastFilter(text) {
     }
   }
 
-  // Changed to 1 for easier testing on sites like dictionary pages
-  if (toxicCount >= 1) {
+  // Hide if multiple toxic words are found
+  if (toxicCount >= 2) {
     return { action: 'hide', reason: 'highly_toxic' };
+  } else if (toxicCount === 1) {
+    // Send to background ML for analysis on borderline cases
+    return { action: 'analyze' };
+  }
+
+  // Check for potentially borderline words that aren't strictly toxic but might need ML
+  if (lowerText.includes("bad") || lowerText.includes("awful") || lowerText.includes("terrible") || lowerText.includes("horrible") || lowerText.includes("disgusting") || lowerText.includes("poor")) {
+      return { action: 'analyze' };
   }
 
   // Clean
