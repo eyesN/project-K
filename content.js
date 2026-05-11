@@ -6,7 +6,7 @@ const SPAM_PATTERNS = [
   /https?:\/\/(?:www\.)?[a-zA-Z0-9-]*?(?:free-?robux|casino|viagra|cheap-?meds|giveaway|hack)[a-zA-Z0-9-]*\.[a-z]{2,}/i,
   /https?:\/\/[a-zA-Z0-9.-]+\.(xyz|top|pw|biz|info|loan|win)\b/i
 ];
-
+# h 
 console.log("Content script loaded. Fast filter constraints initialized.");
 
 const COMMENT_SELECTORS = [
