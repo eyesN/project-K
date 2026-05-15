@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Toxicity Filter</title>
+  <style>
+    body { width: 300px; padding: 10px; font-family: sans-serif; }
+    #status { margin-top: 10px; font-weight: bold; }
+  </style>
+  <!-- Load TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <!-- Load Toxicity model -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/toxicity"></script>
+  <!-- Load Natural.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/natural/0.6.3/natural.min.js"></script>
+</head>
+<body>
+  <h3>Toxicity Filter</h3>
+  <p>Status: <span id="status">Loading models...</span></p>
+  <button id="scan-btn" disabled>Scan Page Now</button>
+  <script src="popup.js"></script>
+</body>
+</html>
