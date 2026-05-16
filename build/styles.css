@@ -1,0 +1,35 @@
+.pureshield-blur {
+  filter: blur(8px) grayscale(80%) !important;
+  opacity: 0.6 !important;
+  transition: filter 0.3s ease, opacity 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative !important;
+  pointer-events: auto !important;
+}
+
+.pureshield-blur:hover {
+  filter: blur(4px) grayscale(50%) !important;
+  opacity: 0.8 !important;
+}
+
+.pureshield-blur::after {
+  content: "⚠ Hided by project-K";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(200, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.pureshield-blur:hover::after {
+  opacity: 0.5;
+}
