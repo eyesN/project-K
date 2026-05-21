@@ -2,10 +2,10 @@
   "name": "pureshield",
   "version": "1.0.0",
   "description": "ML-Powered Social Media Filter",
-  "main": "dist/background.js",
+  "main": "build/background.js",
   "scripts": {
-    "build": "mkdir -p build && cp manifest.json build/ && cp src/styles.css build/ && cp -r src/spam-model build/ && cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm build/ && esbuild src/background.js --bundle --minify --outfile=build/background.js && esbuild src/content.js --bundle --minify --outfile=build/content.js",
-    "watch": "mkdir -p build && cp manifest.json build/ && cp src/styles.css build/ && cp -r src/spam-model build/ && cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm build/ && esbuild src/background.js --bundle --minify --outfile=build/background.js --watch & esbuild src/content.js --bundle --minify --outfile=build/content.js --watch"
+    "build": "mkdir -p build && cp manifest.json build/ && cp src/styles.css build/ && cp popup.html build/ && cp popup.js build/ && cp -r src/spam-model build/ && cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm build/ && esbuild src/background.js --bundle --minify --outfile=build/background.js && esbuild src/content.js --bundle --minify --outfile=build/content.js",
+    "watch": "mkdir -p build && cp manifest.json build/ && cp src/styles.css build/ && cp popup.html build/ && cp popup.js build/ && cp -r src/spam-model build/ && cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm build/ && esbuild src/background.js --bundle --minify --outfile=build/background.js --watch & esbuild src/content.js --bundle --minify --outfile=build/content.js --watch"
   },
   "dependencies": {
     "@tensorflow-models/toxicity": "^1.2.2",
