@@ -1,10 +1,5 @@
 // popup.js
-// let add a comment
-// and push it as change
-// this is git control in vs code
-// a message is necessary to push a change see what happen if we dont pass a comment
-// no comment humne jo code me reflect kra uska idea nhi lgta
-// lets suppose u add a box in html toh or logo ko kese pta lgega ya tujhe kaam krna toh yaad krna kaunsa kiya tha
+// now trying with a comment
 let model;
 const threshold = 0.9;
 const statusEl = document.getElementById('status');
